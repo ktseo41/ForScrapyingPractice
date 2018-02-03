@@ -26,10 +26,3 @@ class QuotesSpider(scrapy.Spider):
         if next_page is not None:
             next_page = response.urljoin(next_page)
             yield scrapy.Request(next_page, callback=self.parse)
-
-
-    # test
-    # test 2
-    # test 3
-    # test 4
-    # test 5, use remote name and branch name
