@@ -10,6 +10,8 @@ class QuotesSpider(scrapy.Spider):
     def parse(self, response):
 
         next_page = response.css('ul[class="pagination top-paginator"]>li:contains("Next") a::attr(href)').extract()[0]
+        # should change this line to 
+        # response.xpath('//ul[@class="pagination top-paginator"]/li/a[contains(text(), "Next")]/@href').extract()[0]
         currencyNames = response.css('td[class="no-wrap currency-name"]')
 
         for currencyname in currencyNames:
