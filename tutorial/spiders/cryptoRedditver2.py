@@ -9,6 +9,8 @@ class Crypitem(scrapy.Item):
     title = scrapy.Field()
     url = scrapy.Field()
     replyUrl = scrapy.Field()
+    replauthor = scrapy.Field()
+    replcontext = scrapy.Field()
 
 
 class CryptoSpider(scrapy.Spider):
@@ -40,16 +42,19 @@ class CryptoSpider(scrapy.Spider):
             
             
             crypitem = Crypitem()
-
-            # crypitem
-            ######
             
+            crypitem['siteTitle'] = siteTitle
+            crypitem['siteKeywords'] = siteKeywords
+            crypitem['title'] = title
+            crypitem['url'] = url
+            crypitem['replyUrl'] = replyUrl
+
             yield Request(url = replyUrl, callback=self.parse_reply, meta={'item' : crypitem })
 
 
     def parse_reply(self, response):
 
-        item = response.meta('item')
+        crypitem = response.meta('item')
         
         replys = response.xpath('//div[@class="sitetable nestedlisting"]//div[@class="entry unvoted"]')
         # replText = response.xpath('//form[@class="usertext warn-on-unload"]')
@@ -61,12 +66,6 @@ class CryptoSpider(scrapy.Spider):
             author = reply.xpath('.//p[@class="tagline"]/a[contains(@class,"author")]/text()').extract()
             context = reply.xpath('.//form[@class="usertext warn-on-unload"]//div[@class="md"]/p/text()').extract()
 
-            if author is not None or context is not None:
-                yield {
-                    "siteTitle" : siteTitle,
-                    "siteKeywords" : siteKeywords,
-                    "title" : title,
-                    "url" : url,
-                    "Repl author" : author,
-                    "Repl context" : context
-                }
+            crypitem['replauthor'] = author
+            crypitem['replcontext'] = context
+                
