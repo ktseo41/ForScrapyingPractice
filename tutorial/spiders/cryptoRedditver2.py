@@ -32,30 +32,31 @@ class CryptoSpider(scrapy.Spider):
             title = topList.css("p.title>a.title::text").extract()[0]
 
             href = topList.css('p.title>a::attr(href)').extract()[0]
-            
+
             if href[1] == 'r':
                 url = 'https://www.reddit.com' + href
             else:
                 url = href
 
             replyUrl = response.xpath('//li[@class="first"]/a/@href').extract()[0]
-            
-            
+
+
             crypitem = Crypitem()
-            
+
             crypitem['siteTitle'] = siteTitle
             crypitem['siteKeywords'] = siteKeywords
             crypitem['title'] = title
             crypitem['url'] = url
             crypitem['replyUrl'] = replyUrl
 
-            yield Request(url = replyUrl, callback=self.parse_reply, meta={'item' : crypitem })
+
+            yield scrapy.Request(url = replyUrl, callback=self.parse_reply, meta={'item' : crypitem })
 
 
     def parse_reply(self, response):
 
-        crypitem = response.meta('item')
-        
+        crypitem = response.meta['item']
+
         replys = response.xpath('//div[@class="sitetable nestedlisting"]//div[@class="entry unvoted"]')
         # replText = response.xpath('//form[@class="usertext warn-on-unload"]')
         # 위와같이하면 오른쪽 사이드바까지 포함되면서 지나치게 쓸데없이 많은 내용들이 포함되더라
@@ -68,4 +69,5 @@ class CryptoSpider(scrapy.Spider):
 
             crypitem['replauthor'] = author
             crypitem['replcontext'] = context
-                
+
+            yield crypitem
