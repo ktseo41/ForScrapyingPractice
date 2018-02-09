@@ -49,8 +49,9 @@ class CryptoSpider(scrapy.Spider):
             crypitem['url'] = url
             crypitem['replyUrl'] = replyUrl
 
+            yield crypitem
 
-            yield scrapy.Request(url = replyUrl, callback=self.parse_reply, meta={'item' : crypitem })
+            # yield scrapy.Request(url = replyUrl, callback=self.parse_reply, meta={'item' : crypitem })
 
 
     def parse_reply(self, response):
