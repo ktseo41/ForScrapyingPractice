@@ -14,7 +14,7 @@ class Crypitem(scrapy.Item):
 
 
 class CryptoSpider(scrapy.Spider):
-    name = 'cryptoReddit'
+    name = 'subcrypt'
     start_urls = ["https://www.reddit.com/r/CryptoCurrency/"]
 
 
@@ -29,10 +29,10 @@ class CryptoSpider(scrapy.Spider):
         top = response.xpath('//div[@class="top-matter"]')
 
         for topList in top :
-            title = topList.css("p.title>a.title::text").extract()[0]
+            # title = topList.css("p.title>a.title::text").extract()[0]
+            title = topList.xpath('//p[@class="title"]/a[@class="title"]/text()').extract()[0]
 
             href = topList.css('p.title>a::attr(href)').extract()[0]
-
             if href[1] == 'r':
                 url = 'https://www.reddit.com' + href
             else:
