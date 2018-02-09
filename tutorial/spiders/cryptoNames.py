@@ -12,7 +12,8 @@ class QuotesSpider(scrapy.Spider):
         # next_page = response.css('ul[class="pagination top-paginator"]>li:contains("Next") a::attr(href)').extract()[0]
         # should change this line to
         next_page = response.xpath('//ul[@class="pagination top-paginator"]/li/a[contains(text(), "Next")]/@href').extract()[0]
-        currencyNames = response.css('td[class="no-wrap currency-name"]')
+        # currencyNames = response.css('td[class="no-wrap currency-name"]')
+        currencyNames = response.xpath('//td[@class="no-wrap currency-name"]')
 
         for currencyname in currencyNames:
             symbol = currencyname.css('span[class="currency-symbol"]>a::text').extract()[0]
