@@ -2,19 +2,19 @@
 
 import scrapy
 
+
+class fullitem(scrapy.Item):
+    siteTitle = scrapy.Field()
+    siteKeywords = scrapy.Field()
+    title = scrapy.Field()
+    url = scrapy.Field()
+    replyAuthor = scrapy.Field()
+    replyContext = scrapy.Field()
+
+
 class QuotesSpider(scrapy.Spider):
     name = 'cryptoReddit'
     start_urls = ["https://www.reddit.com/r/CryptoCurrency/"]
-
-
-    def fullitem(scrapy.Item):
-        siteTitle = scrapy.Field()
-        siteKeywords = scrapy.Field()
-        title = scrapy.Field()
-        url = scrapy.Field()
-        replyAuthor = scrapy.Field()
-        replyContext = scrapy.Field()
-
 
     def parse(self, response):
 
@@ -58,8 +58,6 @@ class QuotesSpider(scrapy.Spider):
 
             # yield {'siteTitle' : siteTitle,
             # 'siteKeywords' : siteKeywords, 'title' : title, 'url' : url}
-
-
 
     def parse_reply(self, response):
 
