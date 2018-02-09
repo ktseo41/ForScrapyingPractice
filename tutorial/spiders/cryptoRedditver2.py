@@ -30,9 +30,9 @@ class CryptoSpider(scrapy.Spider):
 
         for topList in top :
             # title = topList.css("p.title>a.title::text").extract()[0]
-            title = topList.xpath('//p[@class="title"]/a[@class="title"]/text()').extract()[0]
+            title = topList.xpath('./p[@class="title"]/a[contains(@class, "title")]/text()').extract()[0]
 
-            href = topList.css('p.title>a::attr(href)').extract()[0]
+            href = topList.xpath('./p[@class="title"]/a[contains(@class, "title")]/@href').extract()[0]
             if href[1] == 'r':
                 url = 'https://www.reddit.com' + href
             else:
