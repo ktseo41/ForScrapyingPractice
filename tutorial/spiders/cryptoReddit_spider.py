@@ -7,6 +7,15 @@ class QuotesSpider(scrapy.Spider):
     start_urls = ["https://www.reddit.com/r/CryptoCurrency/"]
 
 
+    def fullitem(scrapy.Item):
+        siteTitle = scrapy.Field()
+        siteKeywords = scrapy.Field()
+        title = scrapy.Field()
+        url = scrapy.Field()
+        replyAuthor = scrapy.Field()
+        replyContext = scrapy.Field()
+
+
     def parse(self, response):
 
         # 사이트 페이지 타이틀
@@ -42,14 +51,17 @@ class QuotesSpider(scrapy.Spider):
             # 여기서 다해버리는 것은 새로운 url로 들어가야 하는 것이라서 안된다.
             # 아래처럼 Request를 할 때 인자들을 이런 식으로 넘기는 것은 안된다.
             # 왜냐면 이런 기능은 없음. item으로 만들어서 넘겨야하는 것 같다.
+"""
             if replyUrl is not None:
                 scrapy.Request(url = replyUrl, callback=self.parse_reply, siteTitle, siteKeywords, title, url)
-
+"""
 
             # yield {'siteTitle' : siteTitle,
             # 'siteKeywords' : siteKeywords, 'title' : title, 'url' : url}
 
-    def parse_reply(self, response, siteTitle, siteKeywords, title, url):
+
+
+    def parse_reply(self, response):
 
         replys = response.xpath('//div[@class="sitetable nestedlisting"]//div[@class="entry unvoted"]')
         # replText = response.xpath('//form[@class="usertext warn-on-unload"]')
@@ -60,13 +72,3 @@ class QuotesSpider(scrapy.Spider):
         for reply in replys:
             author = reply.xpath('.//p[@class="tagline"]/a[contains(@class,"author")]/text()').extract()
             context = reply.xpath('.//form[@class="usertext warn-on-unload"]//div[@class="md"]/p/text()').extract()
-
-            if author is not None or context is not None:
-                yield {
-                    "siteTitle" : siteTitle,
-                    "siteKeywords" : siteKeywords,
-                    "title" : title,
-                    "url" : url,
-                    "Repl author" : author,
-                    "Repl context" : context
-                }
