@@ -8,9 +8,11 @@ class Crypitem(scrapy.Item):
     siteKeywords = scrapy.Field()
     title = scrapy.Field()
     url = scrapy.Field()
+    titleTime = scrapy.Field()
     replyUrl = scrapy.Field()
     replauthor = scrapy.Field()
     replcontext = scrapy.Field()
+    replTime = scrapy.Field()
 
 
 class CryptoSpider(scrapy.Spider):
@@ -22,36 +24,37 @@ class CryptoSpider(scrapy.Spider):
 
         siteTitle = response.xpath('//head/title/text()').extract()[0]
 
+
         siteKeywords = response.xpath('//head/meta[contains(@name,"keyword")]/@content').extract()[0].split(',')
         for keyword in siteKeywords:
             siteKeywords[siteKeywords.index(keyword)] = keyword.strip()
 
+
         top = response.xpath('//div[@class="top-matter"]')
-
         for topList in top :
-            # title = topList.css("p.title>a.title::text").extract()[0]
-            title = topList.xpath('./p[@class="title"]/a[contains(@class, "title")]/text()').extract()[0]
 
+            title = topList.xpath('./p[@class="title"]/a[contains(@class, "title")]/text()').extract()[0]
+            titleTime = topList.xpath('.//p[@class="tagline "]/time/@title').extract()[0]
             href = topList.xpath('./p[@class="title"]/a[contains(@class, "title")]/@href').extract()[0]
             if href[1] == 'r':
                 url = 'https://www.reddit.com' + href
             else:
                 url = href
 
-            replyUrl = response.xpath('//li[@class="first"]/a/@href').extract()[0]
+            replyUrl = topList.xpath('.//li[@class="first"]/a/@href').extract()[0]
+
 
 
             crypitem = Crypitem()
-
             crypitem['siteTitle'] = siteTitle
             crypitem['siteKeywords'] = siteKeywords
             crypitem['title'] = title
+            crypitem['titleTime'] = titleTime
             crypitem['url'] = url
             crypitem['replyUrl'] = replyUrl
 
-            yield crypitem
 
-            # yield scrapy.Request(url = replyUrl, callback=self.parse_reply, meta={'item' : crypitem })
+            yield scrapy.Request(url = replyUrl, callback=self.parse_reply, meta={'item' : crypitem})
 
 
     def parse_reply(self, response):
@@ -67,8 +70,10 @@ class CryptoSpider(scrapy.Spider):
         for reply in replys:
             author = reply.xpath('.//p[@class="tagline"]/a[contains(@class,"author")]/text()').extract()
             context = reply.xpath('.//form[@class="usertext warn-on-unload"]//div[@class="md"]/p/text()').extract()
+            replTime = reply.xpath('.//p[@class="tagline"]/time/@title').extract()
 
             crypitem['replauthor'] = author
             crypitem['replcontext'] = context
+            crypitem['replTime'] = replTime
 
             yield crypitem
