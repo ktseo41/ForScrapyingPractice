@@ -1,18 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import scrapy
+from CR.items import Crypitem
 
 
-class Crypitem(scrapy.Item):
-    siteTitle = scrapy.Field()
-    siteKeywords = scrapy.Field()
-    title = scrapy.Field()
-    url = scrapy.Field()
-    titleTime = scrapy.Field()
-    replyUrl = scrapy.Field()
-    replauthor = scrapy.Field()
-    replcontext = scrapy.Field()
-    replTime = scrapy.Field()
 
 
 class CryptoSpider(scrapy.Spider):
@@ -68,9 +59,12 @@ class CryptoSpider(scrapy.Spider):
         replTexts = response.xpath('//div[@class="sitetable nestedlisting"]//form[@class="usertext warn-on-unload"]')
 
         for reply in replys:
-            author = reply.xpath('.//p[@class="tagline"]/a[contains(@class,"author")]/text()').extract()
+            author = reply.xpath('.//p[@class="tagline"]/a[contains(@class,"author")]/text()').extract()[0]
             context = reply.xpath('.//form[@class="usertext warn-on-unload"]//div[@class="md"]/p/text()').extract()
-            replTime = reply.xpath('.//p[@class="tagline"]/time/@title').extract()[0]
+            if reply.xpath('.//p[@class="tagline"]/time/@title').extract()[0]:
+                replTime = reply.xpath('.//p[@class="tagline"]/time/@title').extract()[0]
+            else:
+                replTime = NULL
 
             crypitem['replauthor'] = author
             crypitem['replcontext'] = context
