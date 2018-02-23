@@ -35,3 +35,19 @@ class CrPipeline(object):
                 print ("Error %d: %s") % (e.args[0], e.args[1])
                 return item
         """
+
+
+class TestPipeline(object):
+    def __init__(self):
+        self.conn = pymysql.connect(user='root', passwd='tjqhgus11', db='fort', host='localhost')
+        self.cursor = self.conn.cursor()
+
+    def process_item(self, item, spider):
+        self.cursor.execute("SELECT * FROM fort.testtable WHERE title = %s AND writer = %s AND dateof = %s", (item['title'].encode('utf-8'), item['writer'].encode('utf-8'), item['dateof'].encode('utf-8')))
+        self.result = self.cursor.fetchone()
+
+        if self.result:
+            print("data already exist")
+        else:
+            self.cursor.execute("INSERT INTO fort.testtable(titleid, title, writer, dateof) VALUES (%s %s %s %s)", (item['titleid'].encode('utf-8'), item['title'].encode('utf-8'), item['writer'].encode('utf-8'), item['dateof'].encode('utf-8')))
+            self.conn.commit()

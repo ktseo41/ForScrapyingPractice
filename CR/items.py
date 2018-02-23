@@ -18,6 +18,13 @@ class Crypitem(scrapy.Item):
     replcontext = scrapy.Field()
     replTime = scrapy.Field()
 
+
+class Testitem(scrapy.Item):
+    titleid = scrapy.Field()
+    title = scrapy.Field()
+    writer = scrapy.Field()
+    dateof = scrapy.Field()
+
 class CrItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
