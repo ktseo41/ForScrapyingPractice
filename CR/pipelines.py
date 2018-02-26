@@ -49,5 +49,5 @@ class TestPipeline(object):
         if self.result:
             print("data already exist")
         else:
-            self.cursor.execute("INSERT INTO fort.testtable(titleid, title, writer, dateof) VALUES (%s %s %s %s)", (item['titleid'].encode('utf-8'), item['title'].encode('utf-8'), item['writer'].encode('utf-8'), item['dateof'].encode('utf-8')))
+            self.cursor.execute("INSERT INTO testtable(titleid, title, writer, dateof) VALUES (%s, %s, %s, %s)", (item['titleid'].encode('utf-8'), item['title'].encode('utf-8'), item['writer'].encode('utf-8'), item['dateof'].encode('utf-8')))
             self.conn.commit()
